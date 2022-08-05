@@ -7,7 +7,7 @@ router.post("/register", authController.signUp);
 
 // user display
 router.get("/", userController.getAllUsers);
-router.get("/:id", userController.userInfo);
+router.get("/:id", userController.getUser);
 router.put("/:id", userController.updateUser);
 router.delete("/:id", userController.deleteUser);
 router.patch("/follow/:id", userController.follow);
