@@ -4,6 +4,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerOptions = require("./helper/documentation");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config({ path: "./config/.env" });
 require("./config/database");
@@ -12,6 +13,16 @@ const { checkUser, requireAuth } = require("./middlewares/auth.middleware");
 const swaggerJSDoc = require("swagger-jsdoc");
 
 const app = express();
+
+const corsOptions = {
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'exposedHeaders': ['sessionId'],
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  'preflightContinue': false
+}
+app.use(cors(corsOptions));
 
 // Middlewares
 app.use(express.json());
