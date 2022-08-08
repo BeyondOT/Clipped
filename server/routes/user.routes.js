@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const authController = require("../controllers/auth.controller");
 const userController = require("../controllers/user.controller");
-
+const uploadController = require("../controllers/upload.controller");
+const { avatarUpload } = require("../utils/multer");
 /**
  * @swagger
- * tags: 
+ * tags:
  *   name: User
  *   description: User mangement and authentication
  */
@@ -32,6 +33,9 @@ router.patch("/unfollow/:id", userController.unfollow);
 
 // upload
 
-//router.post("/upload", upload.single("file"), uploadController.uploadProfile);
-
+router.post(
+  "/upload",
+  avatarUpload.single("image"),
+  uploadController.uploadProfile
+);
 module.exports = router;

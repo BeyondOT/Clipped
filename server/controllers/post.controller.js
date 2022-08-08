@@ -1,7 +1,12 @@
 const { now } = require("mongoose");
+const { restart } = require("nodemon");
 const PostModel = require("../models/post.model");
 const UserModel = require("../models/user.model");
 const ObjectID = require("mongoose").Types.ObjectId;
+const fs = require("fs");
+const { promisify } = require("util");
+
+const unlinkAsync = promisify(fs.unlink);
 
 /**
  * Returns all the posts
@@ -19,9 +24,14 @@ const readPost = (req, res) => {
  * @param {string} req.body.message The message that the user posts.
  */
 const createPost = async (req, res) => {
+  if (req.ValidationError) {
+    return res.status(400).send(req.ValidationError);
+  }
+
   const newPost = new PostModel({
     posterId: req.body.posterId,
     message: req.body.message,
+    picture: req.file !== null ? "./uploads/posts/" + req.file.filename : "",
     video: req.body.video,
     likers: [],
     comments: [],
@@ -30,7 +40,7 @@ const createPost = async (req, res) => {
     const post = await newPost.save();
     return res.status(201).json(post);
   } catch (err) {
-    return res.status(400).send(err);
+    return res.status(400).json(err);
   }
 };
 
@@ -132,7 +142,7 @@ const unlikePost = async (req, res) => {
 
 /**
  * Add a comment to the given post.
- * @param {string} req.params.id The id of the post 
+ * @param {string} req.params.id The id of the post
  * @param {string} req.body.commenterId The id of the user that posts the comment
  * @param {string} req.body.commenterPseudo The pseudo of the user that posts the comment
  * @param {string} req.body.text The text of the comment.
@@ -162,13 +172,59 @@ const addComment = async (req, res) => {
   }
 };
 
+/**
+ * Edits a comment.
+ * @param {string} req.params.id The id of the post containing the comment
+ * @param {string} req.body.commentId The id of the comment to be changed
+ * @param {string} req.body.text The new text
+ */
 const editComment = async (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(400).send("ID unknown : " + req.params.id);
   }
+  try {
+    PostModel.findById(req.params.id, (error, docs) => {
+      let theComment = docs.comments.find((comment) =>
+        comment._id.equals(req.body.commentId)
+      );
+      if (!theComment) return res.status(400).send("Comment not found.");
+      theComment.text = req.body.text;
+      docs.save((err) => {
+        if (!err) return res.status(200).json(docs);
+        return res.status(400).send(err);
+      });
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
-const deleteComment = async (req, res) => {};
+/**
+ * Deletes a comment.
+ * @param {string} req.params.id The id of the post containing the comment
+ * @param {string} req.body.commentId The id of the comment to be deleted
+ */
+const deleteComment = async (req, res) => {
+  if (!ObjectID.isValid(req.params.id)) {
+    return res.status(400).send("ID unknown : " + req.params.id);
+  }
+  try {
+    let deleteResponse = await PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: {
+          comments: {
+            _id: req.body.commentId,
+          },
+        },
+      },
+      { new: true }
+    );
+    return res.status(200).json(deleteResponse);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 module.exports = {
   readPost,

@@ -1,19 +1,24 @@
 const UserModel = require("../models/user.model");
 const ObjectID = require("mongoose").Types.ObjectId;
 
-// Get All Users
+/**
+ * Returns All Users
+ */
 const getAllUsers = async (req, res) => {
   const users = await UserModel.find().select("-password");
   res.status(200).json(users);
 };
 
-// Get User Info By his ID
+/**
+ * Returns the User info of the given Id
+ * @param {string} req.params.id The id of the user to return
+ */
 const getUser = (req, res) => {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(400).send("ID. unknown : " + req.params.id);
   }
 
-  UserModel.findById(req.params.id)
+  UserModel.findById(req.params.id).select("-password")
     .then((user) => {
       if (user == null) {
         res.status(400).send("This user doesn't exist.");
@@ -26,7 +31,11 @@ const getUser = (req, res) => {
     });
 };
 
-// Update User Bio
+/**
+ * Updates the bio of the User
+ * @param {string} req.param.id The id of the user to update
+ * @param {string} req.body.bio The new bio to update
+ */
 const updateUser = async (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown : " + req.params.id);
@@ -49,7 +58,10 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Delete user
+/**
+ * Deletes a User
+ * @param {string} req.params.id The id of the user to delete.
+ */
 const deleteUser = async (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown : " + req.params.id);
@@ -62,7 +74,12 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// Follow user
+/**
+ * Follows a user
+ * @param {string} req.params.id The id of the follower User.
+ * @param {string} req.body.idToFollow The id of the followed User.
+ * @description Adds the id of the followed user to "following" field of the follower user. (Same for followed user just in "followers" field.)
+ */
 const follow = async (req, res) => {
   if (
     !ObjectID.isValid(req.params.id) ||
@@ -94,7 +111,13 @@ const follow = async (req, res) => {
   }
 };
 
-// Unfollow user
+/**
+ * Unfollows a user
+ * @param {string} req.params.id The id of the follower User.
+ * @param {string} req.body.idToFollow The id of the followed User.
+ * @description Removes the id of the followed user from "following" field of the follower user. (Same for followed user just in "followers" field.)
+ */
+
 const unfollow = async (req, res) => {
   if (
     !ObjectID.isValid(req.params.id) ||
