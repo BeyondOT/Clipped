@@ -27,7 +27,7 @@ const signUpErrors = (err) => {
 const signInErrors = (err) => {
   let errors = { email: "", password: "" };
 
-  if (err.message.includes("email")) {
+  if (err.message.includes("e-mail")) {
     errors.email = "Email inconnu";
   }
 

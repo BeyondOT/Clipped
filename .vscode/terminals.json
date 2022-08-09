@@ -16,7 +16,7 @@
       "description": "Launches the client terminal.",
       "focus": false,
       "icon": "device-desktop",
-      "color": "terminal.ansiCyan",
+      "color": "terminal.ansiBlue",
       "command": "npm start",
       "open": true,
       "cwd": "client/"
