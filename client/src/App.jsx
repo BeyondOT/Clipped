@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { UidContext } from "./components/AppContext";
+import { UidContext } from "./contexts/AppContext";
 import Routes from "./components/Routes";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -11,7 +11,7 @@ const App = () => {
   const fetchToken = async () => {
     await axios({
       method: "get",
-      url: `${process.env.REACT_APP_API_URL}jwtid`,
+      url: `${process.env.REACT_APP_API_URL}/jwtid`,
       withCredentials: true,
     })
       .then((res) => {

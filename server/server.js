@@ -15,13 +15,13 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const app = express();
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_IP],
   credentials: true,
-  'allowedHeaders': ['sessionId', 'Content-Type'],
-  'exposedHeaders': ['sessionId'],
-  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  'preflightContinue': false
-}
+  allowedHeaders: ["sessionId", "Content-Type"],
+  exposedHeaders: ["sessionId"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+};
 app.use(cors(corsOptions));
 
 // Middlewares
