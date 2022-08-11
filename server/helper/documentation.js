@@ -1,23 +1,29 @@
+const userRoutesDoc = require("./user.doc");
+
 const swaggerOptions = {
-  failOnErrors: true,
-  swaggerDefinition: {
-    info: {
-      title: "CLippped-API",
-      version: "0.0.1",
-      description: " This is a simple api for my clipped app.",
+  openapi: "3.0.0",
+  info: {
+    title: "Clipped-MERN-API",
+    description: "This is the api for my Clipped-MERN project.",
+    contact: {
+      email: "achraf.buisness@gmail.com",
     },
     servers: [
       {
-        url: "http://localhost:5000",
-        description: "Local dev",
-      },
-      {
-        url: "http://production.prod",
-        description: "Production dev",
+        url: "http://192.168.1.24:5000",
+        description: "Local Dev",
       },
     ],
   },
-  apis: ["./routes/user.routes.js"],
+  tags: [
+    {
+      name: "User",
+      description: "User routes",
+    },
+  ],
+  paths: {
+    ...userRoutesDoc,
+  },
 };
 
 module.exports = swaggerOptions;

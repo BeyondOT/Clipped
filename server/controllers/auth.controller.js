@@ -1,6 +1,7 @@
 const UserModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const { signInErrors, signUpErrors } = require("../utils/errors.utils");
+const bcrypt = require("bcrypt");
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -10,11 +11,19 @@ const createToken = (id) => {
   });
 };
 
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+};
+
 const signUp = async (req, res) => {
   const { pseudo, email, password } = req.body;
 
   try {
-    const user = await UserModel.create({ pseudo, email, password });
+    let hashedPassword = await hashPassword(password);
+    console.log(hashedPassword);
+    const user = await UserModel.create({ pseudo, email, password: hashedPassword });
     return res.status(201).json({ user: user._id });
   } catch (error) {
     console.log(error);

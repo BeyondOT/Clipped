@@ -3,7 +3,8 @@ import { UidContext } from "./contexts/AppContext";
 import Routes from "./components/Routes";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { getUser } from "./actions/user.actions";
+import { getUser } from "./_actions/user.actions";
+import { getUsers } from "./_actions/users.actions";
 
 const App = () => {
   const [uid, setUid] = useState(null);
@@ -21,6 +22,10 @@ const App = () => {
         console.log("No token");
       });
   };
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, []);
 
   useEffect(() => {
     fetchToken();

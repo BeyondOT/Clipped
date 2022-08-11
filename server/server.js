@@ -1,6 +1,5 @@
 const express = require("express");
 const swaggerDoc = require("swagger-ui-express");
-const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerOptions = require("./helper/documentation");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
@@ -10,7 +9,6 @@ require("dotenv").config({ path: "./config/.env" });
 require("./config/database");
 
 const { checkUser, requireAuth } = require("./middlewares/auth.middleware");
-const swaggerJSDoc = require("swagger-jsdoc");
 
 const app = express();
 
@@ -39,8 +37,8 @@ app.use("/user", userRoutes);
 app.use("/post", postRoutes);
 
 // Doc Routes
-const swaggerDocs = swaggerJSDoc(swaggerOptions);
-app.use("/api-docs", swaggerDoc.serve, swaggerDoc.setup(swaggerDocs));
+
+app.use("/api-docs", swaggerDoc.serve, swaggerDoc.setup(swaggerOptions));
 
 //Listen
 app.listen(process.env.PORT, () => {

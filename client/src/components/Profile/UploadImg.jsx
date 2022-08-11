@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadPicture } from "../../actions/user.actions";
+import { uploadPicture } from "../../_actions/user.actions";
 import { useForm } from "react-hook-form";
 
 const UploadImg = () => {

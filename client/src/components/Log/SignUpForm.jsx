@@ -56,8 +56,6 @@ const SignUpForm = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const terms = document.getElementById("terms");
-
     checkForm();
     if (errors === true) {
       return;

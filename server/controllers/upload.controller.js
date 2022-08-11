@@ -29,6 +29,7 @@ const uploadProfile = async (req, res) => {
     user.picture = awsUploadResponse.Location;
     user.pictureKey = awsUploadResponse.Key;
     user.save();
+    
     await unlinkAsync(req.file.path);
     return res.status(200).json(user);
   } catch (err) {

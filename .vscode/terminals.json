@@ -1,5 +1,6 @@
 {
-  "autorun": true,
+  "autorun": false,
+  "autokill": false,
   "terminals": [
     {
       "name": "Server",

@@ -8,7 +8,7 @@ const avatarStorage = multer.diskStorage({
     cb(null, "./uploads/profile");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now()+".jpg");
+    cb(null, Date.now()+req.body.name+".jpg");
   },
 });
 

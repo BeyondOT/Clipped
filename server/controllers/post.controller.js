@@ -27,7 +27,6 @@ const createPost = async (req, res) => {
   if (req.ValidationError) {
     return res.status(400).send(req.ValidationError);
   }
-
   const newPost = new PostModel({
     posterId: req.body.posterId,
     message: req.body.message,
