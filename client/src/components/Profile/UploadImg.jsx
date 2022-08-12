@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadPicture } from "../../_actions/user.actions";
-import { useForm } from "react-hook-form";
 
 const UploadImg = () => {
-  const { handleSubmit } = useForm();
   const [file, setFile] = useState();
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.userReducer);
+  const { userData, uploading } = useSelector((state) => state.userReducer);
 
   const handlePicture = (e) => {
     e.preventDefault();
@@ -29,7 +27,7 @@ const UploadImg = () => {
         onChange={(e) => setFile(e.target.files[0])}
       />
       <br />
-      <input type="submit" value="Envoyer" />
+      <input type="submit" value={uploading ? "Chargement...":"Envoyer"} />
     </form>
   );
 };

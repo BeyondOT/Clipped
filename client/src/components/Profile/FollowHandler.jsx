@@ -4,8 +4,9 @@ import { followUser, unFollowUser } from "../../_actions/user.actions";
 
 import { useDispatch, useSelector } from "react-redux";
 
+//TODO: Make users not dissapear immediatly after unfollowing
 const FollowHandler = ({ idToFollow }) => {
-  const userData = useSelector((state) => state.userReducer);
+  const {userData} = useSelector((state) => state.userReducer);
   const [isFollowed, setIsFollowed] = useState(false);
   const dispatch = useDispatch();
   const handleFollow = () => {
@@ -24,7 +25,7 @@ const FollowHandler = ({ idToFollow }) => {
         setIsFollowed(true);
       } else setIsFollowed(true);
     }
-  }, [userData]);
+  }, [userData, idToFollow]);
 
   return (
     <div className="follow-handler">

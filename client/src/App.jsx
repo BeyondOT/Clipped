@@ -1,36 +1,22 @@
-import { React, useState, useEffect } from "react";
-import { UidContext } from "./contexts/AppContext";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Routes from "./components/Routes";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { getUser } from "./_actions/user.actions";
+import { UidContext } from "./contexts/AppContext";
+import { getToken, getUser } from "./_actions/user.actions";
 import { getUsers } from "./_actions/users.actions";
 
 const App = () => {
-  const [uid, setUid] = useState(null);
+  const { uid } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
-  const fetchToken = async () => {
-    await axios({
-      method: "get",
-      url: `${process.env.REACT_APP_API_URL}/jwtid`,
-      withCredentials: true,
-    })
-      .then((res) => {
-        setUid(res.data);
-      })
-      .catch((err) => {
-        console.log("No token");
-      });
-  };
 
   useEffect(() => {
     dispatch(getUsers());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchToken();
+    dispatch(getToken());
     if (uid) dispatch(getUser(uid));
-  }, [uid]);
+  }, [uid, dispatch]);
 
   return (
     <div>

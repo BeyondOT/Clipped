@@ -1,82 +1,80 @@
-import axios from "axios";
+import * as UserApi from "../api/user.requests";
 
-export const GET_USER = "GET_USER";
-export const UPLOAD_PICTURE = "UPLOAD_PICTURE";
+//Getting the token
+export const FETCHING_TOKEN_START = "FETCHING_TOKEN_START";
+export const FETCHING_TOKEN_SUCCESS = "FETCHING_TOKEN_SUCCESS";
+export const FETCHING_TOKEN_FAIL = "FETCHING_TOKEN_FAIL";
+
+//Getting the user
+export const RETRIEVING_START = "RETRIEVING_START";
+export const RETRIEVING_SUCCESS = "RETRIEVING_SUCCESS";
+export const RETRIEVING_FAIL = "RETRIEVING_FAIL";
+
+// Uploading the picture
+export const UPLOADING_START = "UPLOADING_START";
+export const UPLOADING_SUCCESS = "UPLOADING_SUCCESS";
+export const UPLOADING_FAIL = "UPLOADING_FAIL";
+
 export const UPDATE_BIO = "UPDATE_BIO";
 export const FOLLOW_USER = "FOLLOW_USER";
 export const UNFOLLOW_USER = "UNFOLLOW_USER";
 
-export const getUser = (uid) => {
-  return (dispatch) => {
-    return axios
-      .get(`${process.env.REACT_APP_API_URL}/user/${uid}`)
-      .then((res) => {
-        dispatch({ type: GET_USER, payload: res.data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+export const getToken = () => async (dispatch) => {
+  dispatch({ type: FETCHING_TOKEN_START });
+  try {
+    const res = await UserApi.fetchToken();
+    dispatch({ type: FETCHING_TOKEN_SUCCESS, payload: res.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: FETCHING_TOKEN_FAIL });
+  }
 };
 
-export const uploadPicture = (data) => {
-  return async (dispatch) => {
-    try {
-      const res = await axios
-        .post(`${process.env.REACT_APP_API_URL}/user/upload`, data)
-        .then((res) => {
-          dispatch({ type: UPLOAD_PICTURE, payload: res.data.picture });
-        });
-    } catch (err) {
-      return console.log(err);
-    }
-  };
+export const getUser = (uid) => async (dispatch) => {
+  dispatch({ type: RETRIEVING_START });
+  try {
+    const { data } = await UserApi.getUser(uid);
+    dispatch({ type: RETRIEVING_SUCCESS, payload: data });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: RETRIEVING_FAIL });
+  }
 };
 
-export const updateBio = (userId, bio) => {
-  return (dispatch) => {
-    return axios({
-      method: "put",
-      url: `${process.env.REACT_APP_API_URL}/user/` + userId,
-      data: { bio },
-    })
-      .then((res) => {
-        dispatch({ type: UPDATE_BIO, payload: bio });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+export const uploadPicture = (data) => async (dispatch) => {
+  dispatch({ type: UPLOADING_START }); 
+  try {
+    const res = await UserApi.uploadProfilePicture(data);
+    dispatch({ type: UPLOADING_SUCCESS, payload: res.data.picture });
+  } catch (err) {
+    console.log(err);
+    dispatch({ type: UPLOADING_FAIL });
+  }
 };
 
-export const followUser = (followerId, idToFollow) => {
-  return (dispatch) => {
-    return axios({
-      method: "patch",
-      url: `${process.env.REACT_APP_API_URL}/user/follow/` + followerId,
-      data: { idToFollow },
-    })
-      .then((res) => {
-        dispatch({ type: FOLLOW_USER, payload: { idToFollow } });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+export const updateBio = (userId, bio) => async (dispatch) => {
+  try {
+    await UserApi.updateBio(userId, bio);
+    dispatch({ type: UPDATE_BIO, payload: bio });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export const unFollowUser = (followerId, idToUnfollow) => {
-  return (dispatch) => {
-    return axios({
-      method: "patch",
-      url: `${process.env.REACT_APP_API_URL}/user/unfollow/` + followerId,
-      data: { idToUnfollow },
-    })
-      .then((res) => {
-        dispatch({ type: UNFOLLOW_USER, payload: { idToUnfollow } });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+export const followUser = (followerId, idToFollow) => async (dispatch) => {
+  try {
+    await UserApi.followUser(followerId, idToFollow);
+    dispatch({ type: FOLLOW_USER, payload: { idToFollow } });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const unFollowUser = (followerId, idToUnfollow) => async (dispatch) => {
+  try {
+    await UserApi.unfollowUser(followerId, idToUnfollow);
+    dispatch({ type: UNFOLLOW_USER, payload: { idToUnfollow } });
+  } catch (error) {
+    console.log(error);
+  }
 };

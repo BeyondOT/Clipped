@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { dateParser } from "../../utils/Utils";
 import { updateBio } from "../../_actions/user.actions";
-import LeftNav from "../LeftNav";
+import LeftNav from "../Navigation/LeftNav";
 import FollowHandler from "./FollowHandler";
 import UploadImg from "./UploadImg";
 
@@ -12,7 +11,7 @@ const UpdateProfile = () => {
   const [updateForm, setUpdateForm] = useState(false);
   const [followingPopup, setFollowingPopup] = useState(false);
   const [followersPopup, setFollowersPopup] = useState(false);
-  const userData = useSelector((state) => state.userReducer);
+  const {userData} = useSelector((state) => state.userReducer);
   const usersData = useSelector((state) => state.usersReducer);
 
   const dispatch = useDispatch();
@@ -79,7 +78,7 @@ const UpdateProfile = () => {
               &#10005;
             </span>
             <ul>
-              {usersData.map((user) => {
+              {usersData.forEach((user) => {
                 for (let i = 0; i < userData.following.length; i++) {
                   if (user._id === userData.following[i]) {
                     return (
@@ -104,14 +103,14 @@ const UpdateProfile = () => {
               &#10005;
             </span>
             <ul>
-              {usersData.map((user) => {
+              {usersData.forEach((user) => {
                 for (let i = 0; i < userData.followers.length; i++) {
                   if (user._id === userData.followers[i]) {
                     return (
                       <li key={user._id}>
                         <img src={user.picture} alt="user-pic" />
                         <h4>{user.pseudo}</h4>
-                        <FollowHandler />
+                        <FollowHandler idToFollow={user._id}/>
                       </li>
                     );
                   }

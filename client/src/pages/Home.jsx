@@ -1,9 +1,15 @@
-import React from 'react'
+import LeftNav from "../components/Navigation/LeftNav";
+import Thread from "../components/Post/Thread";
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div className="home">
+      <LeftNav />
+      <div className="main">
+        <Thread />
+      </div>
+    </div>
+  );
+};
 
-export default Home
+export default Home;

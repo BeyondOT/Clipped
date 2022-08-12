@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 import SignInForm from "./SignInForm";
 
 const SignUpForm = () => {
@@ -23,7 +23,6 @@ const SignUpForm = () => {
     setErrors(false);
 
     const terms = document.getElementById("terms");
-
     if (pseudo === "") {
       setPseudoError("Veuillez saisir votre pseudo.");
     }
@@ -39,6 +38,7 @@ const SignUpForm = () => {
     if (password !== controlPassword) {
       setPasswordError("Les mots de passe ne sont pas identiques.");
     }
+
     if (!terms.checked) {
       setTermsError("Veuillez cocher cette case.");
     }
