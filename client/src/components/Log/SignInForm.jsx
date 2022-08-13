@@ -1,19 +1,21 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const dispatch = useDispatch();
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     axios({
       method: "post",
       url: `${process.env.REACT_APP_API_URL}/user/login`,
       withCredentials: true,
+      "Content-Type": "application/json",
       data: {
         email,
         password,

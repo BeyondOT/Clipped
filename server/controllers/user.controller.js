@@ -18,7 +18,8 @@ const getUser = (req, res) => {
     return res.status(400).send("ID. unknown : " + req.params.id);
   }
 
-  UserModel.findById(req.params.id).select("-password")
+  UserModel.findById(req.params.id)
+    .select("-password")
     .then((user) => {
       if (user == null) {
         res.status(400).send("This user doesn't exist.");

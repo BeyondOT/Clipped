@@ -5,6 +5,11 @@ export const FETCHING_TOKEN_START = "FETCHING_TOKEN_START";
 export const FETCHING_TOKEN_SUCCESS = "FETCHING_TOKEN_SUCCESS";
 export const FETCHING_TOKEN_FAIL = "FETCHING_TOKEN_FAIL";
 
+// Sign in
+export const SIGN_IN_START = "SIGN_IN_START";
+export const SIGN_IN_SUCCESS = "SIGN_IN_SUCCESS";
+export const SIGN_IN_FAIL = "SIGN_INFAILT";
+
 //Getting the user
 export const RETRIEVING_START = "RETRIEVING_START";
 export const RETRIEVING_SUCCESS = "RETRIEVING_SUCCESS";
@@ -30,6 +35,17 @@ export const getToken = () => async (dispatch) => {
   }
 };
 
+export const signIn = (data) => async (dispatch) => {
+  dispatch({ type: SIGN_IN_START });
+  try {
+    const res = await UserApi.login(data);
+    dispatch({ type: SIGN_IN_SUCCESS, payload: res.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: SIGN_IN_FAIL });
+  }
+};
+
 export const getUser = (uid) => async (dispatch) => {
   dispatch({ type: RETRIEVING_START });
   try {
@@ -42,7 +58,7 @@ export const getUser = (uid) => async (dispatch) => {
 };
 
 export const uploadPicture = (data) => async (dispatch) => {
-  dispatch({ type: UPLOADING_START }); 
+  dispatch({ type: UPLOADING_START });
   try {
     const res = await UserApi.uploadProfilePicture(data);
     dispatch({ type: UPLOADING_SUCCESS, payload: res.data.picture });
@@ -64,7 +80,7 @@ export const updateBio = (userId, bio) => async (dispatch) => {
 export const followUser = (followerId, idToFollow) => async (dispatch) => {
   try {
     await UserApi.followUser(followerId, idToFollow);
-    dispatch({ type: FOLLOW_USER, payload: { idToFollow } });
+    dispatch({ type: FOLLOW_USER, payload: idToFollow });
   } catch (error) {
     console.log(error);
   }
@@ -73,7 +89,7 @@ export const followUser = (followerId, idToFollow) => async (dispatch) => {
 export const unFollowUser = (followerId, idToUnfollow) => async (dispatch) => {
   try {
     await UserApi.unfollowUser(followerId, idToUnfollow);
-    dispatch({ type: UNFOLLOW_USER, payload: { idToUnfollow } });
+    dispatch({ type: UNFOLLOW_USER, payload: idToUnfollow });
   } catch (error) {
     console.log(error);
   }

@@ -1,3 +1,4 @@
+import { arrayRemove } from "../utils/Utils";
 import {
   FETCHING_TOKEN_FAIL,
   FETCHING_TOKEN_START,
@@ -6,6 +7,9 @@ import {
   RETRIEVING_FAIL,
   RETRIEVING_START,
   RETRIEVING_SUCCESS,
+  SIGN_IN_FAIL,
+  SIGN_IN_START,
+  SIGN_IN_SUCCESS,
   UNFOLLOW_USER,
   UPDATE_BIO,
   UPLOADING_FAIL,
@@ -37,6 +41,14 @@ export default function userReducer(
     case FETCHING_TOKEN_FAIL:
       return { ...state, loading: false, error: true };
 
+    // Signing in
+    case SIGN_IN_START:
+      return { ...state, error: false, loading: true };
+    case SIGN_IN_SUCCESS:
+      return { ...state, error: false, loading: false, uid: action.payload };
+    case SIGN_IN_FAIL:
+      return { ...state, error: true, loading: false };
+
     // Getting the user :
     case RETRIEVING_START:
       return { ...state, error: false, loading: true };
@@ -67,16 +79,22 @@ export default function userReducer(
     case UPDATE_BIO:
       return { ...state, bio: action.payload };
     case FOLLOW_USER:
+      
       return {
         ...state,
-        following: [...state.following, action.payload.idToFollow],
+        userData: {
+          ...state.userData,
+          following: [...state.userData.following, action.payload],
+        },
       };
     case UNFOLLOW_USER:
+
       return {
         ...state,
-        following: state.following.filter(
-          (_id) => _id !== action.payload.idToUnfollow
-        ),
+        userData: {
+          ...state.userData,
+          following: arrayRemove(state.userData.following, action.payload),
+        },
       };
     default:
       return state;

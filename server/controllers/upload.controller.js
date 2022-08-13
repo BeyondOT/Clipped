@@ -19,7 +19,6 @@ const uploadProfile = async (req, res) => {
     // If the user has already an image in S3 we delete it
     if (user.pictureKey) {
       let awsDeleteResponse = await deleteFromAws(user.pictureKey);
-      console.log(awsDeleteResponse);
     }
     // Upload the new image to S3
     const folderName = "avatars";

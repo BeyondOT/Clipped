@@ -15,6 +15,12 @@ export const dateParser = (num) => {
   return date.toString();
 };
 
+export const arrayRemove = (arr, value) => {
+  return arr.filter(function (ele) {
+    return ele !== value;
+  });
+};
+
 export const isEmpty = (value) => {
   return (
     value === undefined ||

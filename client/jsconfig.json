@@ -3,7 +3,7 @@
     "module": "commonjs",
     "baseUrl": "./src",
     "target": "ES2020",
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   },
-  "exclude": ["node_modules", "**/node_modules/*"]
+  "exclude": ["node_modules", "**/node_modules/*", "api"]
 }

@@ -7,6 +7,19 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config({ path: "./config/.env" });
 require("./config/database");
+const puppeteer = require("puppeteer");
+
+// TODO: Implement auto video extraction
+/* const start = async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto("https://outplayed.tv/media/mP4koe");
+  const videoLink = await page.evaluate(() => {
+    return document.querySelector("video").src;
+  });
+  console.log(videoLink);
+};
+start(); */
 
 const { checkUser, requireAuth } = require("./middlewares/auth.middleware");
 

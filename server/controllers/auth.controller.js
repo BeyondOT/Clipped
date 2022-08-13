@@ -17,13 +17,32 @@ const hashPassword = async (password) => {
   return hashedPassword;
 };
 
+const setResponseCookie = (req, res, token, strategyName) => {
+  const isHttps = req.protocol === "https";
+  let {
+    cookie: { maxAge },
+  } = config;
+  const cookieSettings = (isHttps) => ({
+    maxAge,
+    httpOnly: true,
+    secure: isHttps,
+  });
+
+  const cookies = new cookies(req, res);
+  cookies.set("auth.strategy", strategyName, cookieSettings(isHttps));
+  cookies.set("jwt", token, cookieSettings(isHttps));
+};
+
 const signUp = async (req, res) => {
   const { pseudo, email, password } = req.body;
 
   try {
     let hashedPassword = await hashPassword(password);
-    console.log(hashedPassword);
-    const user = await UserModel.create({ pseudo, email, password: hashedPassword });
+    const user = await UserModel.create({
+      pseudo,
+      email,
+      password: hashedPassword,
+    });
     return res.status(201).json({ user: user._id });
   } catch (error) {
     console.log(error);
@@ -37,7 +56,13 @@ const signIn = async (req, res) => {
   try {
     const user = await UserModel.login(email, password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge,
+      sameSite: "none",
+      secure: true,
+    });
+
     return res.status(200).json({ user: user._id });
   } catch (error) {
     const errors = signInErrors(error);

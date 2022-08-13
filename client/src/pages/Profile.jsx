@@ -9,7 +9,6 @@ const Profile = () => {
   const { loading } = useSelector((state) => state.userReducer);
 
   if (loading) {
-    console.log("is loading");
     return <div>Is loading</div>;
   }
   return (
