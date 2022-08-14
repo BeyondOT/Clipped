@@ -8,11 +8,12 @@ export const LIKE_POST = "LIKE_POST";
 export const UNLIKE_POST = "UNLIKE_POST";
 
 
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (number) => async (dispatch) => {
   dispatch({ type: POST_RETRIEVING_START });
   try {
     const res = await PostApi.getPosts();
-    dispatch({ type: POST_RETRIEVING_SUCCESS, payload: res.data });
+    const array = res.data.slice(0, number);
+    dispatch({ type: POST_RETRIEVING_SUCCESS, payload: array });
   } catch (error) {
     console.log(error);
     dispatch({ type: POST_RETRIEVING_FAIL });

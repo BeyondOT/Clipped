@@ -12,21 +12,18 @@ const LikeButton = ({ post }) => {
   const like = () => {
     setLiked(true);
     dispatch(likePost(uid, post._id));
-    
   };
 
   const unlike = () => {
     setLiked(false);
     dispatch(unlikePost(uid, post._id));
-    
   };
 
   useEffect(() => {
     if (post.likers.includes(uid)) {
       setLiked(true);
     }
-    console.log("useeffect");
-  }, [uid]);
+  }, [uid, post.likers]);
 
   return (
     <div className="like-container">

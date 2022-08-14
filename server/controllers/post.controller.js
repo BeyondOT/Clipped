@@ -30,8 +30,9 @@ const createPost = async (req, res) => {
   const newPost = new PostModel({
     posterId: req.body.posterId,
     message: req.body.message,
-    picture: req.file !== null ? "./uploads/posts/" + req.file.filename : "",
-    video: req.body.video,
+    picture:
+      req.file !== undefined ? "./uploads/posts/" + req.file.filename : "",
+    video: req.body.video !== null ? req.body.video : "",
     likers: [],
     comments: [],
   });

@@ -11,7 +11,7 @@ const UpdateProfile = () => {
   const [updateForm, setUpdateForm] = useState(false);
   const [followingPopup, setFollowingPopup] = useState(false);
   const [followersPopup, setFollowersPopup] = useState(false);
-  const {userData} = useSelector((state) => state.userReducer);
+  const { userData } = useSelector((state) => state.userReducer);
   const usersData = useSelector((state) => state.usersReducer);
 
   const dispatch = useDispatch();
@@ -85,11 +85,15 @@ const UpdateProfile = () => {
                       <li key={user._id}>
                         <img src={user.picture} alt="user-pic" />
                         <h4>{user.pseudo}</h4>
-                        <FollowHandler idToFollow={user._id} type={"suggestion"} />
+                        <FollowHandler
+                          idToFollow={user._id}
+                          type={"suggestion"}
+                        />
                       </li>
                     );
                   }
                 }
+                return null;
               })}
             </ul>
           </div>
@@ -110,12 +114,16 @@ const UpdateProfile = () => {
                       <li key={user._id}>
                         <img src={user.picture} alt="user-pic" />
                         <h4>{user.pseudo}</h4>
-                        <FollowHandler idToFollow={user._id} type={"suggestion"}/>
+                        <FollowHandler
+                          idToFollow={user._id}
+                          type={"suggestion"}
+                        />
                       </li>
                     );
                   }
-                  return null;
+                  
                 }
+                return null;
               })}
             </ul>
           </div>

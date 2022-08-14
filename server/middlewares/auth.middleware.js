@@ -22,7 +22,6 @@ const checkUser = (req, res, next) => {
 };
 
 const requireAuth = (req, res, next) => {
-  console.log(req.cookies.jwt)
   const token = req.cookies.jwt;
   if (req.cookies.jwt !== undefined) {
     jwt.verify(token, process.env.TOKEN_SECRET, async (error, decodedToken) => {
@@ -30,7 +29,6 @@ const requireAuth = (req, res, next) => {
         console.log(error);
         res.send(400).json("no token");
       } else {
-        console.log(decodedToken.id);
         next();
       }
     });

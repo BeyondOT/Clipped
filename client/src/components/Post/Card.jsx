@@ -5,6 +5,8 @@ import FollowHandler from "../Profile/FollowHandler";
 import LikeButton from "./LikeButton";
 
 const Card = ({ post }) => {
+  const [isUpdated, setIsUpdated] = useState(true);
+  const [textUpdate, setTextUpdate] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { userData, uid } = useSelector((state) => state.userReducer);
   const usersData = useSelector((state) => state.usersReducer);
@@ -12,6 +14,8 @@ const Card = ({ post }) => {
   useEffect(() => {
     !isEmpty(usersData[0]) && setIsLoading(false);
   }, [usersData]);
+
+  const updateItem = async () => {};
 
   return (
     <li className="card-container">
@@ -26,6 +30,7 @@ const Card = ({ post }) => {
                 usersData
                   .map((user) => {
                     if (user._id === post.posterId) return user.picture;
+                    else return null;
                   })
                   .join("")
               }
@@ -40,6 +45,7 @@ const Card = ({ post }) => {
                     usersData
                       .map((user) => {
                         if (user._id === post.posterId) return user.pseudo;
+                        else return null;
                       })
                       .join("")}
                 </h3>
@@ -49,7 +55,20 @@ const Card = ({ post }) => {
               </div>
               <span>{dateParser(post.createdAt)}</span>
             </div>
-            <p>{post.message}</p>
+            {isUpdated === false && <p>{post.message}</p>}
+            {isUpdated === true && (
+              <div className="update-post">
+                <textarea
+                  defaultValue={post.message}
+                  onChange={(e) => setTextUpdate(e.target.value)}
+                />
+                <div className="button-container">
+                  <button className="btn" onChange={updateItem}>
+                    Valider les modifications
+                  </button>
+                </div>
+              </div>
+            )}
             {post.picture && (
               <img src={post.picture} alt="card-pic" className="card-pic"></img>
             )}
