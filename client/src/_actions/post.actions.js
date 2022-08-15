@@ -4,9 +4,17 @@ export const POST_RETRIEVING_START = "POST_RETRIEVING_START";
 export const POST_RETRIEVING_SUCCESS = "POST_RETRIEVING_SUCCESS";
 export const POST_RETRIEVING_FAIL = "POST_RETRIEVING_FAIL";
 
+export const POST_UPDATE_START = "POST_UPDATE_START";
+export const POST_UPDATE_SUCCESS = "POST_UPDATE_SUCCESS";
+export const POST_UPDATE_FAIL = "POST_UPDATE_FAIL";
+
 export const LIKE_POST = "LIKE_POST";
 export const UNLIKE_POST = "UNLIKE_POST";
+export const DELETE_POST = "DELETE_POST";
 
+export const ADD_COMMENT = "ADD_COMMENT";
+export const EDIT_COMMENT = "EDIT_COMMENT";
+export const DELETE_COMMENT = "DELETE_COMMENT";
 
 export const getPosts = (number) => async (dispatch) => {
   dispatch({ type: POST_RETRIEVING_START });
@@ -20,10 +28,30 @@ export const getPosts = (number) => async (dispatch) => {
   }
 };
 
+export const updatePost = (postId, message) => async (dispatch) => {
+  dispatch({ type: POST_UPDATE_START });
+  try {
+    await PostApi.updatePost(postId, message);
+    dispatch({ type: POST_UPDATE_SUCCESS, payload: { postId, message } });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: POST_UPDATE_FAIL });
+  }
+};
+
+export const deletePost = (postId) => async (dispatch) => {
+  try {
+    await PostApi.deletePost(postId);
+    dispatch({ type: DELETE_POST, payload: postId });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const likePost = (likerId, postId) => async (dispatch) => {
   try {
     await PostApi.likePost(likerId, postId);
-    dispatch({ type: LIKE_POST, payload: {postId, likerId} });
+    dispatch({ type: LIKE_POST, payload: { postId, likerId } });
   } catch (error) {
     console.log(error);
   }
@@ -32,7 +60,34 @@ export const likePost = (likerId, postId) => async (dispatch) => {
 export const unlikePost = (unlikerId, postId) => async (dispatch) => {
   try {
     await PostApi.unlikePost(unlikerId, postId);
-    dispatch({ type: UNLIKE_POST, payload: {postId, unlikerId} });
+    dispatch({ type: UNLIKE_POST, payload: { postId, unlikerId } });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addComment = (postId, pseudo, commenterId, text) => async (dispatch) => {
+  try {
+    await PostApi.addComment(postId, pseudo, commenterId, text);
+    dispatch({ type: ADD_COMMENT, payload: { comment:{postId, pseudo, commenterId, text} } });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const editComment = (postId, commentId, text) => async (dispatch) => {
+  try {
+    await PostApi.editComment(postId, commentId, text);
+    dispatch({ type: EDIT_COMMENT, payload: { postId, commentId, text } });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteComment = (postId, commentId) => async (dispatch) => {
+  try {
+    await PostApi.deleteComment(postId, commentId);
+    dispatch({ type: DELETE_COMMENT, payload: {postId, commentId} });
   } catch (error) {
     console.log(error);
   }

@@ -166,7 +166,7 @@ const addComment = async (req, res) => {
       },
       { new: true }
     );
-    return res.status(201).send(commentResponse);
+    return res.status(201).json({commentResponse});
   } catch (error) {
     return res.status(500).send(error);
   }
