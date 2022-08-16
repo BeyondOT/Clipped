@@ -4,6 +4,10 @@ export const POST_RETRIEVING_START = "POST_RETRIEVING_START";
 export const POST_RETRIEVING_SUCCESS = "POST_RETRIEVING_SUCCESS";
 export const POST_RETRIEVING_FAIL = "POST_RETRIEVING_FAIL";
 
+export const ADD_POST_START = "ADD_POST_START";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAIL = "ADD_POST_FAIL";
+
 export const POST_UPDATE_START = "POST_UPDATE_START";
 export const POST_UPDATE_SUCCESS = "POST_UPDATE_SUCCESS";
 export const POST_UPDATE_FAIL = "POST_UPDATE_FAIL";
@@ -25,6 +29,17 @@ export const getPosts = (number) => async (dispatch) => {
   } catch (error) {
     console.log(error);
     dispatch({ type: POST_RETRIEVING_FAIL });
+  }
+};
+
+export const addPost = (data) => async (dispatch) => {
+  dispatch({ type: ADD_POST_START });
+  try {
+    await PostApi.createPost(data);
+    dispatch({ type: ADD_POST_SUCCESS, payload: { data } });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: ADD_POST_FAIL });
   }
 };
 

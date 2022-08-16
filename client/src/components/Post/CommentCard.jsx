@@ -14,8 +14,10 @@ const CommentCard = ({ post }) => {
   const handleComment = (e) => {
     e.preventDefault();
     console.log(userData);
-    dispatch(addComment(post._id, userData.pseudo, uid, text))
-    dispatch(getPosts());
+    if(text !== ""){
+      dispatch(addComment(post._id, userData.pseudo, uid, text))
+      dispatch(getPosts());
+    }
   };
 
   return (

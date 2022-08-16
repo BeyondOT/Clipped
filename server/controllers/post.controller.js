@@ -5,6 +5,7 @@ const UserModel = require("../models/user.model");
 const ObjectID = require("mongoose").Types.ObjectId;
 const fs = require("fs");
 const { promisify } = require("util");
+const { uploadToAws } = require("../utils/aws");
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -27,19 +28,28 @@ const createPost = async (req, res) => {
   if (req.ValidationError) {
     return res.status(400).send(req.ValidationError);
   }
-  const newPost = new PostModel({
-    posterId: req.body.posterId,
-    message: req.body.message,
-    picture:
-      req.file !== undefined ? "./uploads/posts/" + req.file.filename : "",
-    video: req.body.video !== null ? req.body.video : "",
-    likers: [],
-    comments: [],
-  });
   try {
+    const folderName = "posts";
+    let awsUploadResponse = await uploadToAws(req.file, folderName);
+
+    const newPost = new PostModel({
+      posterId: req.body.posterId,
+      message: req.body.message,
+      picture: awsUploadResponse.Location,
+      pictureKey: awsUploadResponse.Key,
+      video: req.body.video !== null ? req.body.video : "",
+      likers: [],
+      comments: [],
+    });
+
     const post = await newPost.save();
+    await unlinkAsync(req.file.path);
     return res.status(201).json(post);
   } catch (err) {
+    if (req.file) {
+      await unlinkAsync(req.file.path);
+      return res.status(500).json({ message: err });
+    }
     return res.status(400).json(err);
   }
 };
@@ -166,7 +176,7 @@ const addComment = async (req, res) => {
       },
       { new: true }
     );
-    return res.status(201).json({commentResponse});
+    return res.status(201).json({ commentResponse });
   } catch (error) {
     return res.status(500).send(error);
   }

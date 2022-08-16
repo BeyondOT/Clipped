@@ -3,8 +3,8 @@ import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
 
 const Log = () => {
-  const [signUpModal, setSignUpModal] = useState(true);
-  const [signInModal, setSignInModal] = useState(false);
+  const [signUpModal, setSignUpModal] = useState(false);
+  const [signInModal, setSignInModal] = useState(true);
 
   const handleModals = (e) => {
     if (e.target.id === "register") {
