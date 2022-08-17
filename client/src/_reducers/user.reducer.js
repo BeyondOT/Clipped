@@ -17,6 +17,7 @@ import {
   UPLOADING_SUCCESS,
 } from "../_actions/user.actions";
 
+// The user reducer contains all the user data model
 export default function userReducer(
   state = {
     userData: {},
