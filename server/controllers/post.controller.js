@@ -5,7 +5,7 @@ const UserModel = require("../models/user.model");
 const ObjectID = require("mongoose").Types.ObjectId;
 const fs = require("fs");
 const { promisify } = require("util");
-const { uploadToAws } = require("../utils/aws");
+const { uploadToAws, deleteFromAws } = require("../utils/aws");
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -29,22 +29,35 @@ const createPost = async (req, res) => {
     return res.status(400).send(req.ValidationError);
   }
   try {
-    const folderName = "posts";
-    let awsUploadResponse = await uploadToAws(req.file, folderName);
-
-    const newPost = new PostModel({
-      posterId: req.body.posterId,
-      message: req.body.message,
-      picture: awsUploadResponse.Location,
-      pictureKey: awsUploadResponse.Key,
-      video: req.body.video !== null ? req.body.video : "",
-      likers: [],
-      comments: [],
-    });
-
-    const post = await newPost.save();
-    await unlinkAsync(req.file.path);
-    return res.status(201).json(post);
+    if (req.file) {
+      const folderName = "posts";
+      const awsUploadResponse = await uploadToAws(req.file, folderName);
+      const newPost = new PostModel({
+        posterId: req.body.posterId,
+        message: req.body.message,
+        picture: awsUploadResponse.Location,
+        pictureKey: awsUploadResponse.Key,
+        video: req.body.video !== null ? req.body.video : "",
+        likers: [],
+        comments: [],
+      });
+      const post = await newPost.save();
+      await unlinkAsync(req.file.path);
+      return res.status(201).json(post);
+    }
+    if (!req.file) {
+      const newPost = new PostModel({
+        posterId: req.body.posterId,
+        message: req.body.message,
+        picture: "",
+        pictureKey: "",
+        video: req.body.video !== null ? req.body.video : "",
+        likers: [],
+        comments: [],
+      });
+      const post = await newPost.save();
+      return res.status(201).json(post);
+    }
   } catch (err) {
     if (req.file) {
       await unlinkAsync(req.file.path);
@@ -85,7 +98,12 @@ const deletePost = async (req, res) => {
     return res.status(400).send("ID unknown : " + req.params.id);
   }
   try {
-    let deleteResponse = await PostModel.findByIdAndDelete(req.params.id);
+    let post = await PostModel.findOne({_id: req.params.id});
+    if(!post) throw "Post Not Found !"
+    if(post.pictureKey){
+      deleteFromAws(post.pictureKey);
+    }
+    let deleteResponse = await post.remove();
     return res.status(200).json(deleteResponse);
   } catch (err) {
     return res.status(400).json(err);
@@ -104,19 +122,19 @@ const likePost = async (req, res) => {
   }
 
   try {
-    let likedResponse = await PostModel.findByIdAndUpdate(
+    let postResponse = await PostModel.findByIdAndUpdate(
       req.params.id,
       { $addToSet: { likers: req.body.likerId } },
       { new: true }
     );
 
-    let likerResponse = await UserModel.findByIdAndUpdate(
+    let userResponse = await UserModel.findByIdAndUpdate(
       req.body.likerId,
       { $addToSet: { likes: req.params.id } },
       { new: true }
     );
 
-    return res.status(200).json({ likedResponse, likerResponse });
+    return res.status(200).json({ postResponse, userResponse });
   } catch (error) {
     return res.status(400).send(error);
   }
@@ -133,18 +151,18 @@ const unlikePost = async (req, res) => {
     return res.status(400).send("ID unknown : " + req.params.id);
   }
   try {
-    let unlikedResponse = await PostModel.findByIdAndUpdate(
+    let postResponse = await PostModel.findByIdAndUpdate(
       req.params.id,
       { $pull: { likers: req.body.unlikerId } },
       { new: true }
     );
 
-    let unlikerResponse = await UserModel.findByIdAndUpdate(
+    let userResponse = await UserModel.findByIdAndUpdate(
       req.body.unlikerId,
       { $pull: { likes: req.params.id } },
       { new: true }
     );
-    return res.status(200).json({ unlikedResponse, unlikerResponse });
+    return res.status(200).json({ postResponse, userResponse });
   } catch (error) {
     return res.status(400).send(error);
   }

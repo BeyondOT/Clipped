@@ -47,6 +47,9 @@ const postImageStorage = multer.diskStorage({
 });
 
 const postImageFilefilter = (req, file, cb) => {
+  if ( file === null){
+    return cb(null, true)
+  }
   if (
     file.mimetype != "image/png" &&
     file.mimetype != "image/jpg" &&
